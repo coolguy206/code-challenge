@@ -60,28 +60,120 @@ body {
         }
       }
 
-      .flags {
-        display: flex;
-        flex-wrap: wrap;
-        margin: 0 0 1rem;
-
-        div {
-          flex-basis: 33%;
-          text-transform: capitalize;
-          font-size: 1rem;
-        }
+      ul {
+        display: none;
       }
+    }
+  }
+}
 
-      .reg {
-        color: #565458;
+.reg {
+  color: #565458;
+}
+
+.messages {
+  color: #af1a31;
+}
+
+.flags {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 0 1rem;
+
+  div {
+    flex-basis: 33%;
+    text-transform: capitalize;
+    font-size: 1rem;
+  }
+}
+
+.overlay {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: #000;
+  opacity: 0.5;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.lightbox {
+  @media screen and (max-width:1024px) {
+    width: 90%;
+  }
+  @media screen and (max-width:414px) {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(0,0);
+  }
+  width: 70%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-wrap: wrap;
+  padding: 2rem;
+  box-sizing: border-box;
+  background: #fff;
+
+  div {
+    &.close {
+      flex-basis: 100%;
+      text-align: right;
+      font-size: 2rem;
+      margin: 0 0 1rem;
+
+      &:hover {
+        cursor: pointer;
       }
+    }
 
-      .messages {
-        color: #af1a31;
+    &.images {
+      @media screen and (max-width:414px) {
+        flex-basis: 100%;
+        order: 2;
+      }
+      flex-basis: 35%;
+
+      .hero {
+        width: 100%;
       }
 
       ul {
-        display: none;
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+
+        li {
+          flex-basis: 33%;
+          box-sizing: border-box;
+          padding: 0 1rem 1rem 0;
+
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    &.details {
+      @media screen and (max-width:414px) {
+        flex-basis: 100%;
+        padding: 0;
+        order: 1;
+      }
+      flex-basis: 50%;
+      padding: 0 0 0 2rem;
+
+      a {
+        text-decoration: none;
+        color: #000;
       }
     }
   }

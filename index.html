@@ -52,11 +52,46 @@
         });
         messages = messages + '</div>';
 
-        var li = '<li><a href="' + val.links.www + '"><img src="' + val.hero.href + '" alt="' + val.name + '"><h2>' + val.name + '</h2></a>' + flags + '<h3 class="reg"><strike>$' + regPriceL + ' - $' + regPriceH +
-          '</strike></h3><h3>$' + sellPriceL + ' - $' + sellPriceH + '</h3>' + messages + images + '</li>'
+        var li = '<li><a href="#" data-url="' + val.links.www + '"><img class="hero" src="' + val.hero.href + '" alt="' + val.name + '"><h2>' + val.name + '</h2></a>' + flags + '<h3 class="reg"><strike>$' + regPriceL + ' - $' + regPriceH +
+          '</strike></h3><h3 class="sale">$' + sellPriceL + ' - $' + sellPriceH + '</h3>' + messages + images + '</li>'
         elem = elem + li;
       });
       $('.container ul').append(elem);
+
+      //click
+      $('.container a').click(function(e) {
+        e.preventDefault();
+        var url = $(this).attr('data-url');
+        var hero = $(this).find('.hero')[0].outerHTML;
+        var name = $(this).find('h2')[0].outerHTML;
+        var flags = $(this).siblings('.flags')[0].outerHTML;
+        var regularPrice = $(this).siblings('.reg')[0].outerHTML;
+        var salePrice = $(this).siblings('.sale')[0].outerHTML;
+        var messages = $(this).siblings('.messages')[0].outerHTML;
+        var thumbs = $(this).siblings('ul')[0].outerHTML;
+        var overlay = '<div class="overlay"></div>';
+        var lightbox = '<div class="lightbox"><div class="close">X</div><div class="images">' + hero + thumbs + '</div><div class="details"><a href="' + url + '" target="_blank">' + name + '</a>' + flags + regularPrice + salePrice + messages +
+          '</div></div>'
+        $('body').prepend(overlay, lightbox);
+
+        //hover thumbs
+        var originalSrc = $('.lightbox .images .hero').attr('src');
+        $('.lightbox .images ul li img').hover(function() {
+          // console.log('hover thumb');
+
+          var src = $(this).attr('src');
+          $('.lightbox .images .hero').attr('src', src);
+        }, function() {
+          // console.log('unhover thumb');
+          $('.lightbox .images .hero').attr('src', originalSrc);
+        });
+
+        //close lightbox
+        $('.overlay, .lightbox .close').click(function() {
+          $('.overlay').remove();
+          $('.lightbox').remove();
+        });
+      });
     });
 
     $(document).ready(function() {
