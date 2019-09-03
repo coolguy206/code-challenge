@@ -10,6 +10,21 @@ module.exports = function(grunt) {
   // require('load-grunt-config')(grunt);
 
   grunt.initConfig({
+    includes: {
+      options: {
+        // flatten: true
+      },
+
+      default: {
+        files: [{
+          cwd: '',
+          src: ['html/index.html'],
+          dest: 'index.html',
+        }, ],
+
+      },
+    },
+
     watch: {
       options: {
         livereload: true
@@ -23,7 +38,7 @@ module.exports = function(grunt) {
     less: {
       options: {
         // sourceMap: true,
-        compress: true,
+        // compress: true,
       },
 
       default: {
