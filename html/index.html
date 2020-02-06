@@ -2,90 +2,132 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" type="text/css" href="css/output/styles.css">
-  <title>Document</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="css/less/styles.css">
+    <title>Document</title>
 </head>
 
 <body>
-  <div class="container">
-    <ul></ul>
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <div class="container">
+        <ul></ul>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+   <!-- <script>
+    $(document).ready(function() {
 
-  <script>
-    var decimal = function(elem) {
-      var x = elem;
-      x = x.toFixed(2);
-      return x;
-    };
 
-    $.getJSON("js/index.json", function(json) {
-      console.log(json);
-      var elem = '';
-      $.each(json.groups, function(i, val) {
-        var regPriceH = decimal(val.priceRange.regular.high);
-        var regPriceL = decimal(val.priceRange.regular.low);
-        var sellPriceH = decimal(val.priceRange.selling.high);
-        var sellPriceL = decimal(val.priceRange.selling.low);
+        var decimal = function(elem) {
+            var x = elem;
+            x = x.toFixed(2);
+            return x;
+        };
 
-        var flags = '<div class="flags">';
-        $.each(val.flags, function(j, arr) {
-          var div = '<div>' + arr.id + '</div>';
-          flags = flags + div;
+        $.getJSON("js/json.json", function(json) {
+            console.log(json);
+
+            var elem = '';
+            $.each(json.groups, function(i, val) {
+
+                console.log(val.reviews);
+
+                var sellPriceH = decimal(val.priceRange.selling.high);
+                var sellPriceL = decimal(val.priceRange.selling.low);
+
+
+                var flags = '';
+                $.each(val.flags, function(j, arr) {
+                    var div = `<div>${arr.id}</div>`;
+                    flags = flags + div;
+                });
+
+
+                var images = `<li><img src="${val.hero.href}" alt="${val.name}"></li>`;
+                $.each(val.images, function(l, img) {
+                    var img = `<li><img src="${img.href}" alt="${val.name}"></li>`;
+                    images = images + img;
+                });
+
+                var messages = '';
+                var messagesLength = val.messages;
+                console.log(messagesLength.length);
+                if (messagesLength >= 1) {
+                    $.each(val.messages, function(k, str) {
+                        var h3 = `<h3>${str}</h3>`;
+                        messages = messages + h3;
+                    });
+                }
+
+                var reviews = `
+                <div class="reviews">
+                  <h2>Reviews</h2>
+                  <p>
+                    Average Rating: ${val.reviews.averageRating}<br>
+                    Review Count: ${val.reviews.reviewCount}
+                  </p>
+                </div>
+                `;
+
+
+
+
+                var li = `
+        <li>
+          <a href="#" data-url="${val.links.www}">
+            <img class="hero" src="${val.hero.href}" alt="${val.name}">
+            <h2>${val.name}</h2>
+          </a>
+          <div class="flags">${flags}</div>
+          <h3 class="sale">$${sellPriceL} - $${sellPriceH}</h3>
+          <div class="messages">${messages}</div> 
+          ${reviews}
+          <ul>${images}</ul>
+        </li>`;
+
+                elem = elem + li;
+
+            });
+
+            $('.container ul').append(elem);
+
+            //click
+            $('.container a').click(function(e) {
+                e.preventDefault();
+                var url = $(this).attr('data-url');
+                var hero = $(this).find('.hero')[0].outerHTML;
+                var name = $(this).find('h2')[0].outerHTML;
+                var flags = $(this).siblings('.flags')[0].outerHTML;
+                var salePrice = $(this).siblings('.sale')[0].outerHTML;
+                var messages = $(this).siblings('.messages')[0].outerHTML;
+                var reviews = $(this).siblings('.reviews')[0].outerHTML;
+                var thumbs = $(this).siblings('ul')[0].outerHTML;
+                var overlay = '<div class="overlay"></div>';
+                var lightbox = `
+                <div class="lightbox">
+                  <div class="close">X</div>
+                  <div class="thumbs">${thumbs}</div>
+                  <div class="images">${hero}</div>
+                  <div class="details">
+                    <a href="${url}" target="_blank">${name}</a>
+                    ${flags}
+                    ${salePrice}
+                    ${messages}
+                    ${reviews}
+                  </div>
+                </div>`;
+
+                $('body').prepend(overlay, lightbox);
+
+              
+            });
         });
-        flags = flags + '</div>';
 
-        var images = '<ul><li><img src="' + val.hero.href + '" alt="' + val.name + '"></li>';
-        $.each(val.images, function(l, img) {
-          img = '<li><img src="' + img.href + '" alt="' + val.name + '"></li>';
-          images = images + img;
-        });
-        images = images + '</ul>';
-
-        var messages = '<div class="messages">';
-        $.each(val.messages, function(k, str) {
-          var h3 = '<h3>' + str + '</h3>';
-          messages = messages + h3;
-        });
-        messages = messages + '</div>';
-
-        var li = '<li><a href="#" data-url="' + val.links.www + '"><img class="hero" src="' + val.hero.href + '" alt="' + val.name + '"><h2>' + val.name + '</h2></a>' + flags + '<h3 class="reg"><strike>$' + regPriceL + ' - $' + regPriceH +
-          '</strike></h3><h3 class="sale">$' + sellPriceL + ' - $' + sellPriceH + '</h3>' + messages + images + '</li>'
-        elem = elem + li;
-      });
-      $('.container ul').append(elem);
-
-      //click
-      $('.container a').click(function(e) {
-        e.preventDefault();
-        var url = $(this).attr('data-url');
-        var hero = $(this).find('.hero')[0].outerHTML;
-        var name = $(this).find('h2')[0].outerHTML;
-        var flags = $(this).siblings('.flags')[0].outerHTML;
-        var regularPrice = $(this).siblings('.reg')[0].outerHTML;
-        var salePrice = $(this).siblings('.sale')[0].outerHTML;
-        var messages = $(this).siblings('.messages')[0].outerHTML;
-        var thumbs = $(this).siblings('ul')[0].outerHTML;
-        var overlay = '<div class="overlay"></div>';
-        var lightbox = '<div class="lightbox"><div class="close">X</div><div class="thumbs">' + thumbs + '</div><div class="images">' + hero + '</div><div class="details"><a href="' + url + '" target="_blank">' + name + '</a>' + flags +
-          regularPrice + salePrice + messages +
-          '</div></div>'
-        $('body').prepend(overlay, lightbox);
-
-        include "../js/lightbox-mobile.js"
-
-        include "../js/lightbox-thumbs-hover.js"
-
-        include "../js/lightbox-thumbs-click.js"
-
-        include "../js/lightbox-close.js"
-      });
     });
-  </script>
-  <!-- <script src="//localhost:35729/livereload.js"></script> -->
+    </script> -->
+
+    <script src="js/uglify/scripts.min.js"></script>
+    <script src="//localhost:35729/livereload.js"></script>
 </body>
 
 </html>
