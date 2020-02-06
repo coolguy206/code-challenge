@@ -1,76 +1,120 @@
 module.exports = function(grunt) {
 
-  // Default task(s).
-  grunt.registerTask('hello', function() {
-    console.log('hello world from Grunt!');
-  });
+    // Default task(s).
+    grunt.registerTask('hello', function() {
+        console.log('hello world from Grunt!');
+    });
 
-  require('load-grunt-tasks')(grunt);
+    require('load-grunt-tasks')(grunt);
 
-  // require('load-grunt-config')(grunt);
+    // require('load-grunt-config')(grunt);
 
-  grunt.initConfig({
-    includes: {
-      options: {
-        // flatten: true
-      },
+    grunt.initConfig({
+        babel: {
+            options: {
+                sourceMap: true,
+                presets: ['@babel/preset-env']
+            },
 
-      default: {
-        files: [{
-          cwd: '',
-          src: ['html/index.html'],
-          dest: 'index.html',
-        }, ],
+            default: {
+                files: [{
+                    expand: true,
+                    cwd: 'js/',
+                    src: '*.js',
+                    dest: 'js/babel/'
+                }]
+            },
+        },
 
-      },
-    },
+        uglify: {
+            options: {
+                compress: true,
+                // sourceMap: true
+            },
 
-    watch: {
-      options: {
-        livereload: true
-      },
+            default: {
+                //dynamic files
+                expand: true,
+                cwd: 'js/browserify/',
+                src: ['*.js'],
+                dest: 'js/uglify/',
+                ext: '.min.js',
+            },
+        },
 
-      default: {
-        files: ['html/*.html', 'css/*.less', 'js/*.js'],
-        tasks: ['less', 'includes'],
-      }
-    },
-    less: {
-      options: {
-        // sourceMap: true,
-        // compress: true,
-      },
+        browserify: {
+            default: {
+                files: [{
+                    expand: true,
+                    cwd: 'js/babel',
+                    src: '*.js',
+                    dest: 'js/browserify'
+                }]
+            },
 
-      default: {
-        expand: true,
-        cwd: 'css/',
-        src: '*.less',
-        dest: 'css/output',
-        ext: '.css',
-      },
+        },
 
-    },
-    connect: {
-      server: {
-        options: {
-          port: 8000,
-          keepalive: true,
-          livereload: true
-        }
-      }
-    },
-    concurrent: {
-      dev: {
-        target1: ['watch'],
-        target2: ['connect'],
-      }
-    },
-    nodemon: {
-      dev: {
-        script: 'makeFile.js'
-      }
-    },
-  });
+        includes: {
+            options: {
+                // flatten: true
+            },
+
+            default: {
+                files: [{
+                    cwd: '',
+                    src: ['html/index.html'],
+                    dest: 'index.html',
+                }, ],
+
+            },
+        },
+
+        watch: {
+            options: {
+                livereload: true
+            },
+
+            default: {
+                files: ['html/*.html', 'css/*.less', 'js/*.js'],
+                tasks: ['less', 'babel', 'browserify', 'uglify', 'includes'],
+            }
+        },
+        less: {
+            options: {
+                // sourceMap: true,
+                // compress: true,
+            },
+
+            default: {
+                expand: true,
+                cwd: 'css/',
+                src: '*.less',
+                dest: 'css/less',
+                ext: '.css',
+            },
+
+        },
+        connect: {
+            server: {
+                options: {
+                    port: 8000,
+                    keepalive: true,
+                    livereload: true
+                }
+            }
+        },
+        concurrent: {
+            dev: {
+                target1: ['watch'],
+                target2: ['connect'],
+            }
+        },
+        nodemon: {
+            dev: {
+                script: 'makeFile.js'
+            }
+        },
+    });
 
 
 };
