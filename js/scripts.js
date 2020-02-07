@@ -1,49 +1,56 @@
 var lightbox = require('./lightbox-obj.js');
- 
- $(document).ready(function() {
 
-     var decimal = function(elem) {
-         var x = elem;
-         x = x.toFixed(2);
-         return x;
-     };
+$(document).ready(function() {
 
-     $.getJSON("js/json.json", function(json) {
-         console.log(json);
+    lightbox.close();
 
-         var elem = '';
-         $.each(json.groups, function(i, val) {
+    // lightbox.hover();
 
-             // console.log(val.reviews);
-
-             var sellPriceH = decimal(val.priceRange.selling.high);
-             var sellPriceL = decimal(val.priceRange.selling.low);
+    // lightbox.click();
 
 
-             var flags = '';
-             $.each(val.flags, function(j, arr) {
-                 var div = `<div>${arr.id}</div>`;
-                 flags = flags + div;
-             });
+    var decimal = function(elem) {
+        var x = elem;
+        x = x.toFixed(2);
+        return x;
+    };
+
+    $.getJSON("js/json.json", function(json) {
+        console.log(json);
+
+        var elem = '';
+        $.each(json.groups, function(i, val) {
+
+            // console.log(val.reviews);
+
+            var sellPriceH = decimal(val.priceRange.selling.high);
+            var sellPriceL = decimal(val.priceRange.selling.low);
 
 
-             var images = `<li><img src="${val.hero.href}" alt="${val.name}"></li>`;
-             $.each(val.images, function(l, img) {
-                 var img = `<li><img src="${img.href}" alt="${val.name}"></li>`;
-                 images = images + img;
-             });
+            var flags = '';
+            $.each(val.flags, function(j, arr) {
+                var div = `<div>${arr.id}</div>`;
+                flags = flags + div;
+            });
 
-             var messages = '';
-             let messagesLength = val.messages;
-             console.log(messagesLength.length);
-             if (messagesLength >= 1) {
-                 $.each(val.messages, function(k, str) {
-                     var h3 = `<h3>${str}</h3>`;
-                     messages = messages + h3;
-                 });
-             }
 
-             let reviews = `
+            var images = `<li><img src="${val.hero.href}" alt="${val.name}"></li>`;
+            $.each(val.images, function(l, img) {
+                var img = `<li><img src="${img.href}" alt="${val.name}"></li>`;
+                images = images + img;
+            });
+
+            var messages = '';
+            let messagesLength = val.messages;
+            // console.log(messagesLength.length);
+            if (messagesLength >= 1) {
+                $.each(val.messages, function(k, str) {
+                    var h3 = `<h3>${str}</h3>`;
+                    messages = messages + h3;
+                });
+            }
+
+            let reviews = `
                 <div class="reviews">
                   <h2>Reviews</h2>
                   <p>
@@ -56,7 +63,7 @@ var lightbox = require('./lightbox-obj.js');
 
 
 
-             let li = `
+            let li = `
         <li>
           <a href="#" data-url="${val.links.www}">
             <img class="hero" src="${val.hero.href}" alt="${val.name}">
@@ -69,24 +76,26 @@ var lightbox = require('./lightbox-obj.js');
           <ul>${images}</ul>
         </li>`;
 
-             elem = elem + li;
+            elem = elem + li;
 
-         });
+        });
 
-         $('.container ul').append(elem);
+        $('.container ul').append(elem);
 
-         //click
-         $('.container a').click(function(e) {
-             e.preventDefault();
-             const url = $(this).attr('data-url');
-             const hero = $(this).find('.hero')[0].outerHTML;
-             const name = $(this).find('h2')[0].outerHTML;
-             const flags = $(this).siblings('.flags')[0].outerHTML;
-             const salePrice = $(this).siblings('.sale')[0].outerHTML;
-             const messages = $(this).siblings('.messages')[0].outerHTML;
-             const thumbs = $(this).siblings('ul')[0].outerHTML;
-             const overlay = '<div class="overlay"></div>';
-             const lightbox = `
+        //click
+        $('.container a').click(function(e) {
+            e.preventDefault();
+            const url = $(this).attr('data-url');
+            const hero = $(this).find('.hero')[0].outerHTML;
+            const name = $(this).find('h2')[0].outerHTML;
+            const flags = $(this).siblings('.flags')[0].outerHTML;
+            const salePrice = $(this).siblings('.sale')[0].outerHTML;
+            const messages = $(this).siblings('.messages')[0].outerHTML;
+            const reviews = $(this).siblings('.reviews')[0].outerHTML;
+            const thumbs = $(this).siblings('ul')[0].outerHTML;
+            const overlay = '<div class="overlay"></div>';
+
+            /*const lightbox = `
                 <div class="lightbox">
                   <div class="close">X</div>
                   <div class="thumbs">${thumbs}</div>
@@ -96,18 +105,35 @@ var lightbox = require('./lightbox-obj.js');
                     ${flags}
                     ${salePrice}
                     ${messages}
+                    ${reviews}
+                  </div>
+                </div>`;*/
+
+            const lightbox = `
+                <div class="lightbox">
+                  <div class="close">X</div>
+                  <div class="images">${thumbs}</div>
+                  <div class="details">
+                    <a href="${url}" target="_blank">${name}</a>
+                    ${flags}
+                    ${salePrice}
+                    ${messages}
+                    ${reviews}
                   </div>
                 </div>`;
 
-             $('body').prepend(overlay, lightbox);
+            $('body').prepend(overlay, lightbox);
 
-             lightbox.close();
 
-             lightbox.click();
+            $('.lightbox .images ul').bxSlider();
 
-             lightbox.hover();
-            
-         });
-     });
+            //move lightbox on mobile
+            if ($(window).width() <= 414) {
+                var y = window.pageYOffset;
+                $('.lightbox').css('top', y);
+            }
 
- });
+        });
+    });
+
+});

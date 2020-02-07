@@ -3,25 +3,27 @@
 
 module.exports = {
   close: function close() {
-    $('.overlay, .lightbox .close').click(function () {
+    // console.log('close from lightbox obj')
+    $(document).on('click', '.overlay, .lightbox .close', function () {
       $('.overlay').remove();
       $('.lightbox').remove();
     });
   },
   hover: function hover() {
-    //hover thumbs
-    var originalSrc = $('.lightbox .images .hero').attr('src');
-    $('.lightbox .thumbs ul li img').hover(function () {
+    // console.log('hover from lightbox obj');
+    $(document).on('mouseenter', '.lightbox .thumbs ul li img', function () {
       // console.log('hover thumb');
       var src = $(this).attr('src');
       $('.lightbox .images .hero').attr('src', src);
-    }, function () {
-      // console.log('unhover thumb');
+    });
+    $(document).on('mouseleave', '.lightbox .thumbs ul li img', function () {
+      var originalSrc = $('.lightbox div.thumbs ul li:nth-of-type(1) img').attr('src'); // console.log('unhover thumb');
+
       $('.lightbox .images .hero').attr('src', originalSrc);
     });
   },
   click: function click() {
-    $('.lightbox .thumbs ul li img').click(function () {
+    $(document).on('click', '.lightbox .thumbs ul li img', function () {
       var src = $(this).attr('src');
       $('.lightbox .images .hero').attr('src', src);
     });
@@ -35,6 +37,9 @@ module.exports = {
 var lightbox = require('./lightbox-obj.js');
 
 $(document).ready(function () {
+  lightbox.close(); // lightbox.hover();
+  // lightbox.click();
+
   var decimal = function decimal(elem) {
     var x = elem;
     x = x.toFixed(2);
@@ -59,8 +64,7 @@ $(document).ready(function () {
         images = images + img;
       });
       var messages = '';
-      var messagesLength = val.messages;
-      console.log(messagesLength.length);
+      var messagesLength = val.messages; // console.log(messagesLength.length);
 
       if (messagesLength >= 1) {
         $.each(val.messages, function (k, str) {
@@ -83,13 +87,31 @@ $(document).ready(function () {
       var flags = $(this).siblings('.flags')[0].outerHTML;
       var salePrice = $(this).siblings('.sale')[0].outerHTML;
       var messages = $(this).siblings('.messages')[0].outerHTML;
+      var reviews = $(this).siblings('.reviews')[0].outerHTML;
       var thumbs = $(this).siblings('ul')[0].outerHTML;
       var overlay = '<div class="overlay"></div>';
-      var lightbox = "\n                <div class=\"lightbox\">\n                  <div class=\"close\">X</div>\n                  <div class=\"thumbs\">".concat(thumbs, "</div>\n                  <div class=\"images\">").concat(hero, "</div>\n                  <div class=\"details\">\n                    <a href=\"").concat(url, "\" target=\"_blank\">").concat(name, "</a>\n                    ").concat(flags, "\n                    ").concat(salePrice, "\n                    ").concat(messages, "\n                  </div>\n                </div>");
+      /*const lightbox = `
+          <div class="lightbox">
+            <div class="close">X</div>
+            <div class="thumbs">${thumbs}</div>
+            <div class="images">${hero}</div>
+            <div class="details">
+              <a href="${url}" target="_blank">${name}</a>
+              ${flags}
+              ${salePrice}
+              ${messages}
+              ${reviews}
+            </div>
+          </div>`;*/
+
+      var lightbox = "\n                <div class=\"lightbox\">\n                  <div class=\"close\">X</div>\n                  <div class=\"images\">".concat(thumbs, "</div>\n                  <div class=\"details\">\n                    <a href=\"").concat(url, "\" target=\"_blank\">").concat(name, "</a>\n                    ").concat(flags, "\n                    ").concat(salePrice, "\n                    ").concat(messages, "\n                    ").concat(reviews, "\n                  </div>\n                </div>");
       $('body').prepend(overlay, lightbox);
-      lightbox.close();
-      lightbox.click();
-      lightbox.hover();
+      $('.lightbox .images ul').bxSlider(); //move lightbox on mobile
+
+      if ($(window).width() <= 414) {
+        var y = window.pageYOffset;
+        $('.lightbox').css('top', y);
+      }
     });
   });
 });

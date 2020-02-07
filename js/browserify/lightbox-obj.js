@@ -3,25 +3,27 @@
 
 module.exports = {
   close: function close() {
-    $('.overlay, .lightbox .close').click(function () {
+    // console.log('close from lightbox obj')
+    $(document).on('click', '.overlay, .lightbox .close', function () {
       $('.overlay').remove();
       $('.lightbox').remove();
     });
   },
   hover: function hover() {
-    //hover thumbs
-    var originalSrc = $('.lightbox .images .hero').attr('src');
-    $('.lightbox .thumbs ul li img').hover(function () {
+    // console.log('hover from lightbox obj');
+    $(document).on('mouseenter', '.lightbox .thumbs ul li img', function () {
       // console.log('hover thumb');
       var src = $(this).attr('src');
       $('.lightbox .images .hero').attr('src', src);
-    }, function () {
-      // console.log('unhover thumb');
+    });
+    $(document).on('mouseleave', '.lightbox .thumbs ul li img', function () {
+      var originalSrc = $('.lightbox div.thumbs ul li:nth-of-type(1) img').attr('src'); // console.log('unhover thumb');
+
       $('.lightbox .images .hero').attr('src', originalSrc);
     });
   },
   click: function click() {
-    $('.lightbox .thumbs ul li img').click(function () {
+    $(document).on('click', '.lightbox .thumbs ul li img', function () {
       var src = $(this).attr('src');
       $('.lightbox .images .hero').attr('src', src);
     });

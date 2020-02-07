@@ -20,6 +20,26 @@ body h2 {
 body h3 {
   font-size: 1.125rem;
 }
+.bx-wrapper {
+  box-shadow: none !important;
+  border: 0 !important;
+  width: 88%;
+}
+@media screen and (max-width: 768px) {
+  .bx-wrapper {
+    width: 84%;
+  }
+}
+@media screen and (max-width: 414px) {
+  .bx-wrapper {
+    width: 90%;
+  }
+}
+@media screen and (max-width: 768px) {
+  .bx-wrapper .bx-controls-direction a {
+    display: none;
+  }
+}
 .container {
   max-width: 1400px;
   margin: 0 auto;
@@ -35,8 +55,9 @@ body h3 {
   flex-basis: 33%;
   box-sizing: border-box;
   padding: 1rem;
+  text-align: center;
 }
-@media screen and (max-width: 812px) {
+@media screen and (max-width: 768px) {
   .container ul li {
     flex-basis: 50%;
   }
@@ -65,15 +86,19 @@ body h3 {
 .messages {
   color: #af1a31;
 }
+@media screen and (max-width: 414px) {
+}
 .flags {
   display: flex;
   flex-wrap: wrap;
   margin: 0 0 1rem;
 }
 .flags div {
-  flex-basis: 33%;
+  flex-basis: 50%;
   text-transform: capitalize;
   font-size: 1rem;
+}
+@media screen and (max-width: 414px) {
 }
 .overlay {
   width: 100%;
@@ -109,6 +134,7 @@ body h3 {
     top: 0;
     left: 0;
     transform: translate(0, 0);
+    text-align: center;
   }
 }
 .lightbox div.close {
